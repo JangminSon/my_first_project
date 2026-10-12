@@ -65,11 +65,17 @@ a{color:inherit}
 /* 장소 */
 .venue .name{font-family:var(--serif);font-size:1.25rem;margin-bottom:2px}
 .venue .addr{color:var(--muted);font-size:.9rem}
-.btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px}
+
+/* 간략 지도 스타일 */
+.map-wrap{margin-top:22px;width:100%;height:220px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--white)}
+.map-wrap iframe{width:100%;height:100%;border:0}
+
+.btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px}
 .btn{font:inherit;font-size:.85rem;font-weight:400;padding:10px 18px;border:1px solid var(--line);background:var(--white);color:var(--ink);border-radius:999px;cursor:pointer;text-decoration:none;display:inline-block}
 .btn:active{background:var(--line)}
-.howto{margin-top:36px;text-align:left;font-size:.88rem;color:var(--muted)}
-.howto dt{font-weight:500;color:var(--ink);margin-top:14px}
+.howto{margin-top:30px;text-align:left;font-size:.88rem;color:var(--muted)}
+.howto dt{font-weight:500;color:var(--ink);margin-top:14px;font-size:.92rem}
+.howto dd{margin-top:4px;line-height:1.6}
 
 /* 갤러리 */
 .gallery{background:var(--white);padding-left:12px;padding-right:12px}
@@ -131,6 +137,13 @@ details[open] summary::after{content:"−"}
   <h2>오시는 길</h2>
   <p class="name" id="vName"></p>
   <p class="addr" id="vAddr"></p>
+
+  <!-- 🗺️ 간략 지도 영역 (네이버 지도 퍼가기 iframe 코드 삽입 위치) -->
+  <div class="map-wrap">
+    <!-- 네이버 지도에서 장소 검색 후 [공유] -> [HTML 퍼가기] 코드를 아래에 넣어주세요 -->
+    <iframe src="https://m.map.naver.com/map.naver?..." loading="lazy"></iframe>
+  </div>
+
   <div class="btns">
     <a class="btn" id="mapNaver" target="_blank" rel="noopener">네이버 지도</a>
     <a class="btn" id="mapKakao" target="_blank" rel="noopener">카카오맵</a>
@@ -167,8 +180,7 @@ details[open] summary::after{content:"−"}
 
 <script>
 /* ============================================================
-   ✏️ 여기만 수정하세요. (아래 값은 모두 예시입니다)
-   사진: images 폴더에 cover.jpg, 1.jpg ~ 6.jpg 를 넣으면 자동 반영됩니다.
+   ✏️ 설정 영역
    ============================================================ */
 const CONFIG = {
   groom: { name: '손장민', father: '손정수', mother: '우미향', order: '아들' },
@@ -176,8 +188,12 @@ const CONFIG = {
   date: '2027-01-03T14:00:00+09:00',
   venue: {
     name: '아펠가모 반포',
-    address: '서울특별시 서초구 반포대로 235 (반포동)',
-    howto: [] /* 교통 안내가 필요하면 ['지하철','안내 문구'] 형식으로 추가 */
+    address: '서울특별시 서초구 반포대로 235 (반포동), 반포 효성빌딩 LL층 (지하2층)',
+    howto: [
+      ['전화번호', '02-3431-0230'],
+      ['지하철 안내', '고속터미널역(3호선, 7호선, 9호선) 5번 출구(7호선) 방향으로 나와 서래골공원 방면 신호등 건넌 후 첫 번째 건물 (반포 효성빌딩) LL층 (지하2층)'],
+      ['버스 안내', '• 간선: 405, 740<br>• 지선: 5413<br>• 공항버스: 6703<br>(※ 서울지방조달청역 하차, 반포 효성빌딩 LL층)']
+    ]
   },
   greeting: '혼자일 때보다 둘일 때 더 나다워지는 사람,\n그 사람과 평생 걷기로 했습니다.\n\n저희가 걸어갈 길에\n따뜻한 축복 한마디 보태 주시면\n오래도록 마음에 새기겠습니다.',
   closing: '함께해 주셔서 감사합니다',
@@ -207,7 +223,6 @@ const dateStr = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 ${
 
 document.title = `${CONFIG.groom.name} · ${CONFIG.bride.name} 결혼합니다`;
 
-// 사진 자리: 이미지가 없으면 지우고 그라데이션만 남김
 function photo(el, src, alt){
   const img = new Image();
   img.alt = alt || '';
@@ -215,19 +230,16 @@ function photo(el, src, alt){
   img.src = src;
 }
 
-// 표지
 photo($('coverPh'), CONFIG.cover, `${CONFIG.groom.name}, ${CONFIG.bride.name}`);
 $('coverDate').textContent = `${d.getFullYear()}. ${d.getMonth()+1}. ${d.getDate()}`;
 $('coverNames').innerHTML = `${CONFIG.groom.name}<span>그리고</span>${CONFIG.bride.name}`;
 $('coverInfo').textContent = `${dateStr} ${timeStr}`;
 
-// 인사말 / 혼주
 $('greetText').innerHTML = CONFIG.greeting.replace(/\n/g, '<br>');
 const g = CONFIG.groom, b = CONFIG.bride;
 $('parents').innerHTML =
   `${g.father} · ${g.mother}의 ${g.order}<b>${g.name}</b><br>${b.father} · ${b.mother}의 ${b.order}<b>${b.name}</b>`;
 
-// 일시 / 달력
 $('whenBig').innerHTML = `${dateStr}<br>${timeStr}`;
 $('whenSub').textContent = CONFIG.venue.name;
 (function cal(){
@@ -246,7 +258,6 @@ $('whenSub').textContent = CONFIG.venue.name;
   $('dday').textContent = diff > 0 ? `결혼식까지 ${diff}일 남았습니다` : diff === 0 ? '오늘 결혼합니다' : '';
 })();
 
-// 장소
 $('vName').textContent = CONFIG.venue.name;
 $('vAddr').textContent = CONFIG.venue.address;
 const q = encodeURIComponent(CONFIG.venue.address);
@@ -255,30 +266,25 @@ $('mapKakao').href = `https://map.kakao.com/?q=${q}`;
 $('howto').innerHTML = CONFIG.venue.howto.map(([t, s]) => `<dt>${t}</dt><dd>${s}</dd>`).join('');
 $('howto').hidden = !CONFIG.venue.howto.length;
 
-// 갤러리 + 확대 보기
 $('grid').innerHTML = CONFIG.photos.map(() => '<button class="ph" type="button" aria-label="사진 크게 보기"></button>').join('');
 [...$('grid').children].forEach((el, i) => {
   photo(el, CONFIG.photos[i], `웨딩 사진 ${i + 1}`);
   el.onclick = () => {
     if (!el.dataset.ok) return;
-    $('lbImg').src = CONFIG.photos[i];
-    $('lb').classList.add('open');
+    $('lbImg').src = CONFIG.photos[i];$('lb').classList.add('open');
   };
 });
-$('lb').onclick = () => $('lb').classList.remove('open');
+$('lb').onclick = () =>$('lb').classList.remove('open');
 document.addEventListener('keydown', e => { if (e.key === 'Escape') $('lb').classList.remove('open'); });
 
-// 계좌
 $('accounts').innerHTML = Object.entries(CONFIG.accounts).map(([side, list]) =>
   `<details><summary>${side}</summary>${list.map(a =>
     `<div class="acct"><div>${a.bank} ${a.no}<small>${a.who}</small></div>
-     <button class="btn" type="button" data-copy="${a.bank} ${a.no}">복사</button></div>`).join('')}</details>`
+     <button class="btn" type="button" data-copy="${a.bank}${a.no}">복사</button></div>`).join('')}</details>`
 ).join('');
 
-// 맺음
 $('endText').textContent = CONFIG.closing;
 
-// 복사 / 공유
 const toast = msg => {
   const t = $('toast'); t.textContent = msg; t.classList.add('show');
   clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 1800);
@@ -292,10 +298,7 @@ async function copy(text){
   toast('복사되었습니다');
 }
 $('copyAddr').onclick = () => copy(CONFIG.venue.address);
-$('accounts').addEventListener('click', e => {
-  const t = e.target.closest('[data-copy]'); if (t) copy(t.dataset.copy);
-});
-$('shareBtn').onclick = async () => {
+$('accounts').addEventListener('click', e => {   const t = e.target.closest('[data-copy]'); if (t) copy(t.dataset.copy); });$('shareBtn').onclick = async () => {
   const data = { title: document.title, url: location.href };
   if (navigator.share) { try { await navigator.share(data); } catch {} }
   else copy(location.href);
