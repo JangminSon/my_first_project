@@ -121,6 +121,7 @@ details[open] summary::after{content:"−"}
   <div class="cover-text">
     <h1 id="coverNames"></h1>
     <p id="coverInfo"></p>
+    <p id="coverInfo2"></p>
   </div>
 </section>
 
@@ -237,7 +238,8 @@ function photo(el, src, alt){
 photo($('coverPh'), CONFIG.cover, `${CONFIG.groom.name}, ${CONFIG.bride.name}`);
 $('coverDate').textContent = `${d.getFullYear()}. ${d.getMonth()+1}. ${d.getDate()}`;
 $('coverNames').innerHTML = `${CONFIG.groom.name}<span>그리고</span>${CONFIG.bride.name}`;
-$('coverInfo').textContent = `${dateStr} ${timeStr}\n${CONFIG.venue.name}`;
+$('coverInfo').textContent = `${dateStr} ${timeStr}`;
+$('coverInfo2').textContent = `${CONFIG.venue.name}`;
 
 $('greetText').innerHTML = CONFIG.greeting.replace(/\n/g, '<br>');
 const g = CONFIG.groom, b = CONFIG.bride;
