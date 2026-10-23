@@ -134,7 +134,6 @@ details[open] summary::after{content:"−"}
 <section class="when">
   <h2>일시</h2>
   <p class="big" id="whenBig"></p>
-  <p class="sub" id="whenSub"></p>
   <div class="cal" id="cal" aria-label="결혼식 달력"></div>
   <p class="dday" id="dday"></p>
 </section>
@@ -247,7 +246,6 @@ $('parents').innerHTML =
   `<b>${g.father} · ${g.mother}</b> 의 ${g.order}<b>${g.name}</b><br><b>${b.father} · ${b.mother}</b> 의 ${b.order}<b>${b.name}</b>`;
 
 $('whenBig').innerHTML = `${dateStr}<br>${timeStr}`;
-$('whenSub').textContent = CONFIG.venue.name;
 (function cal(){
   const y = d.getFullYear(), m = d.getMonth();
   const first = new Date(y, m, 1).getDay(), last = new Date(y, m + 1, 0).getDate();
