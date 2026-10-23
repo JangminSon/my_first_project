@@ -225,7 +225,7 @@ const hr = d.getHours(), min = d.getMinutes();
 const timeStr = `${hr < 12 ? '오전' : '오후'} ${hr % 12 || 12}시${min ? ' ' + min + '분' : ''}`;
 const dateStr = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 ${DOW[d.getDay()]}요일`;
 
-document.title = `${CONFIG.groom.name} · ${CONFIG.bride.name} 결혼합니다`;
+document.title = `${CONFIG.groom.name} ❤️ ${CONFIG.bride.name} 결혼합니다`;
 
 function photo(el, src, alt){
   const img = new Image();
