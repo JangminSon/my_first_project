@@ -237,7 +237,7 @@ function photo(el, src, alt){
 photo($('coverPh'), CONFIG.cover, `${CONFIG.groom.name}, ${CONFIG.bride.name}`);
 $('coverDate').textContent = `${d.getFullYear()}. ${d.getMonth()+1}. ${d.getDate()}`;
 $('coverNames').innerHTML = `${CONFIG.groom.name}<span>그리고</span>${CONFIG.bride.name}`;
-$('coverInfo').textContent = `${dateStr} ${timeStr}`;
+$('coverInfo').textContent = `${dateStr} ${timeStr}<br>${CONFIG.venue.name}`;
 
 $('greetText').innerHTML = CONFIG.greeting.replace(/\n/g, '<br>');
 const g = CONFIG.groom, b = CONFIG.bride;
