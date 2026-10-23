@@ -242,7 +242,7 @@ $('coverInfo').textContent = `${dateStr} ${timeStr}`;
 $('greetText').innerHTML = CONFIG.greeting.replace(/\n/g, '<br>');
 const g = CONFIG.groom, b = CONFIG.bride;
 $('parents').innerHTML =
-  `${g.father} · ${g.mother} 의 ${g.order}<b>${g.name}</b><br>${b.father} · ${b.mother}의 ${b.order}<b>${b.name}</b>`;
+  `${g.father} · ${g.mother}의 ${g.order}<b>${g.name}</b><br>${b.father} · ${b.mother}의 ${b.order}<b>${b.name}</b>`;
 
 $('whenBig').innerHTML = `${dateStr}<br>${timeStr}`;
 $('whenSub').textContent = CONFIG.venue.name;
