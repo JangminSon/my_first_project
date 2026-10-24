@@ -5,10 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>손장민 ❤️ 강명진 결혼합니다</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <!-- 카카오톡/문자 링크 미리보기: 배포 후 아래 og:image, og:url을 실제 주소로 바꿔주세요 -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="손장민 ❤️ 강명진 결혼합니다">
-<meta property="og:description" content="2027년 1월 3일 일요일 오후 2시 소중한 분들을 초대합니다">
+<meta property="og:description" content="2027년 1월 3일 일요일 오후 2시\n아펠가모 반포 · 소중한 분들을 초대합니다">
 <meta property="og:image" content="https://jangminson.github.io/my_first_project/intro_3.jpg">
 <meta property="og:url" content="https://jangminson.github.io/my_first_project/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,6 +33,7 @@ p{font-size:.95rem}
 .serif{font-family:var(--serif)}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+[hidden]{display:none!important}
 
 /* 사진 자리: 사진이 없으면 그라데이션이 보입니다 */
 .ph{background:linear-gradient(160deg,var(--blush),#C9D6DF);position:relative;overflow:hidden}
@@ -64,7 +68,7 @@ a{color:inherit}
 
 /* 장소 */
 .venue .name{font-family:var(--serif);font-size:1.25rem;margin-bottom:2px}
-.venue .addr{color:var(--muted);font-size:.9rem;white-space:pre-line}
+.venue .addr{color:var(--muted);font-size:.9rem}
 
 /* 간략 지도 스타일 */
 .map-wrap{margin-top:22px;width:100%;height:220px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--white)}
@@ -101,6 +105,22 @@ details[open] summary::after{content:"−"}
 .acct{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-top:1px solid var(--line);font-size:.88rem}
 .acct small{display:block;color:var(--muted);font-size:.8rem}
 .acct .btn{padding:7px 14px;flex:none}
+
+/* 방명록 */
+.guestbook{background:var(--white)}
+.gb-intro{color:var(--muted);font-size:.9rem;margin-bottom:20px}
+.gb-form{display:flex;flex-direction:column;gap:8px;text-align:left}
+.gb-form input,.gb-form textarea{font:inherit;font-size:16px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);resize:none;width:100%}
+.gb-form .btn{align-self:center;margin-top:4px}
+.gb-note{min-height:1.6em;margin-top:8px;font-size:.82rem;color:var(--muted)}
+.gb-list{margin-top:16px;text-align:left}
+.gb-item{padding:16px 4px;border-top:1px solid var(--line)}
+.gb-head{display:flex;justify-content:space-between;align-items:baseline}
+.gb-head b{font-family:var(--serif);font-weight:700}
+.gb-head small{color:var(--muted);font-size:.78rem}
+.gb-item p{margin-top:4px;font-size:.92rem;white-space:pre-wrap;word-break:break-word}
+.gb-empty{text-align:center;color:var(--muted);font-size:.9rem;padding:16px 0}
+#gbMore{margin-top:16px}
 
 /* 맺음 */
 .end{background:var(--ink);color:#C8D2DB;padding-bottom:calc(56px + env(safe-area-inset-bottom))}
@@ -165,6 +185,19 @@ details[open] summary::after{content:"−"}
   <h2>마음 전하실 곳</h2>
   <p style="margin-bottom:24px;color:var(--muted)">참석이 어려워 마음만 전하시는 분들을 위해<br>계좌번호를 안내드립니다.</p>
   <div id="accounts"></div>
+</section>
+
+<section class="guestbook">
+  <h2>방명록</h2>
+  <p class="gb-intro">두 사람에게 따뜻한 축하의 말을 남겨주세요.<br>남겨주신 글은 모든 방문자에게 공개됩니다.</p>
+  <form class="gb-form" id="gbForm">
+    <input id="gbName" maxlength="20" placeholder="이름" autocomplete="off" required>
+    <textarea id="gbMsg" maxlength="200" rows="3" placeholder="축하 메시지를 남겨주세요 (200자 이내)" required></textarea>
+    <button class="btn" id="gbSubmit" type="submit">남기기</button>
+  </form>
+  <p class="gb-note" id="gbNote" role="status"></p>
+  <div class="gb-list" id="gbList"></div>
+  <button class="btn" id="gbMore" type="button" hidden>더 보기</button>
 </section>
 
 <section class="end">
@@ -263,8 +296,8 @@ $('whenBig').innerHTML = `${dateStr}<br>${timeStr}`;
 })();
 
 $('vName').textContent = CONFIG.venue.name;
-$('vAddr').textContent = CONFIG.venue.address;
-const q = encodeURIComponent(CONFIG.venue.address);
+$('vAddr').innerHTML = CONFIG.venue.address.replace(/\n/g, '<br>');
+const q = encodeURIComponent(CONFIG.venue.address.replace(/\n/g, ' '));
 $('mapNaver').href = `https://map.naver.com/p/search/${q}`;
 $('mapKakao').href = `https://map.kakao.com/?q=${q}`;
 $('howto').innerHTML = CONFIG.venue.howto.map(([t, s]) => `<dt>${t}</dt><dd>${s}</dd>`).join('');
@@ -301,12 +334,89 @@ async function copy(text){
   }
   toast('복사되었습니다');
 }
-$('copyAddr').onclick = () => copy(CONFIG.venue.address);
+$('copyAddr').onclick = () => copy(CONFIG.venue.address.replace(/\n/g, ' '));
 $('accounts').addEventListener('click', e => {   const t = e.target.closest('[data-copy]'); if (t) copy(t.dataset.copy); });$('shareBtn').onclick = async () => {
   const data = { title: document.title, url: location.href };
   if (navigator.share) { try { await navigator.share(data); } catch {} }
   else copy(location.href);
 };
+</script>
+
+<!-- 방명록 (Firebase Firestore). 위 스크립트와 분리되어 있어 오류가 나도 다른 영역에 영향이 없습니다. -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, startAfter, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ✏️ Firebase 콘솔 > 프로젝트 설정 > 내 앱(웹)의 firebaseConfig 값을 붙여 넣으세요 */
+  const firebaseConfig = {
+    apiKey: "AIzaSyCMdvb1cvK1W1psT-PsDtlnlERUGLgzIk8",
+    authDomain: "wedding-70068.firebaseapp.com",
+    projectId: "wedding-70068",
+    storageBucket: "wedding-70068.firebasestorage.app",
+    messagingSenderId: "634769333983",
+    appId: "1:634769333983:web:98f4defdb20da4c615d36a",
+    measurementId: "G-733YEFDQKR"
+  };
+
+const $ = id => document.getElementById(id);
+const PAGE = 20;
+const note = t => { $('gbNote').textContent = t || ''; };
+
+if (firebaseConfig.apiKey.startsWith('YOUR_')) {
+  $('gbForm').hidden = true;
+  $('gbList').innerHTML = '<p class="gb-empty">방명록을 준비하고 있습니다.</p>';
+} else {
+  const col = collection(getFirestore(initializeApp(firebaseConfig)), 'guestbook');
+  let last = null;
+
+  const fmt = ts => { const t = ts && ts.toDate ? ts.toDate() : null; return t ? `${t.getFullYear()}.${t.getMonth()+1}.${t.getDate()}` : ''; };
+  const addItem = doc => {
+    const { name, message, createdAt } = doc.data();
+    const item = document.createElement('div'); item.className = 'gb-item';
+    const head = document.createElement('div'); head.className = 'gb-head';
+    const nm = document.createElement('b'); nm.textContent = name;
+    const dt = document.createElement('small'); dt.textContent = fmt(createdAt);
+    const p = document.createElement('p'); p.textContent = message;
+    head.append(nm, dt); item.append(head, p); $('gbList').append(item);
+  };
+
+  async function load(reset){
+    try {
+      if (reset){ last = null; $('gbList').textContent = ''; }
+      const snap = await getDocs(query(col, orderBy('createdAt', 'desc'), ...(last ? [startAfter(last)] : []), limit(PAGE)));
+      snap.forEach(addItem);
+      if (snap.size) last = snap.docs[snap.size - 1];
+      $('gbMore').hidden = snap.size < PAGE;
+      if (reset && snap.empty) $('gbList').innerHTML = '<p class="gb-empty">첫 번째 축하 메시지를 남겨주세요 🙂</p>';
+    } catch (e) {
+      console.error(e);
+      if (reset) $('gbList').innerHTML = '<p class="gb-empty">방명록을 불러오지 못했습니다.</p>';
+    }
+  }
+
+  $('gbMore').onclick = () => load(false);
+
+  $('gbForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = $('gbName').value.trim(), message = $('gbMsg').value.trim();
+    if (!name || !message) return;
+    try { if (Date.now() - Number(localStorage.getItem('gbLast') || 0) < 30000) { note('잠시 후 다시 남겨주세요.'); return; } } catch {}
+    $('gbSubmit').disabled = true; note('등록 중...');
+    try {
+      await addDoc(col, { name, message, createdAt: serverTimestamp() });
+      $('gbForm').reset();
+      try { localStorage.setItem('gbLast', String(Date.now())); } catch {}
+      note('소중한 메시지 감사합니다 💌');
+      await load(true);
+    } catch (err) {
+      console.error(err);
+      note('등록하지 못했습니다. 잠시 후 다시 시도해 주세요.');
+    } finally { $('gbSubmit').disabled = false; }
+  });
+
+  load(true);
+}
 </script>
 <script src="swipe.js?v=1"></script>
 </body>
