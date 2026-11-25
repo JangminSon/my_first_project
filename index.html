@@ -90,7 +90,10 @@ a{color:inherit}
 .gallery{background:var(--white);padding-left:12px;padding-right:12px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
 .grid .ph{aspect-ratio:3/4;cursor:pointer;border:0;padding:0;display:block;width:100%}
+.grid .ph.extra{display:none}
+.grid.expanded .ph.extra{display:block}
 .grid .ph:first-child{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+.gallery-more{margin:20px auto 0}
 .lb{position:fixed;inset:0;background:rgba(15,22,32,.94);display:none;align-items:center;justify-content:center;z-index:9;padding:20px}
 .lb.open{display:flex}
 .lb img{max-width:100%;max-height:100%;object-fit:contain}
@@ -179,6 +182,7 @@ details[open] summary::after{content:"−"}
 <section class="gallery">
   <h2>갤러리</h2>
   <div class="grid" id="grid"></div>
+  <button class="btn gallery-more" id="galleryMore" type="button" aria-expanded="false">사진 펼치기</button>
 </section>
 
 <section>
@@ -235,7 +239,30 @@ const CONFIG = {
   greeting: '혼자일 때보다 둘일 때 더 나다워지는 사람,\n그 사람과 평생 함께 걷기로 했습니다.\n\n저희가 걸어갈 길에\n따뜻한 축복 한 말씀 보태 주시면\n오래도록 마음에 새기겠습니다.',
   closing: '함께해 주셔서 감사합니다',
   cover: 'intro_3.jpg',
-  photos: ['bridal_carry_bw.jpg','0103_bed.jpg','marching.jpg','outside_veil.jpg','sofa_confetti.jpg','standing_bw.jpg'],
+  photos: [
+    'a-hotel-3.jpg',
+    'a-ballon-1.jpg',
+    '0103_bed.jpg',
+    'a-stair-1.jpg',
+    'a-veil-bw-1.jpg',
+    'a-cupcake-jm-1.jpg',
+    'a-cupcake-mj-1.jpg',
+    'a-cupcake-4.jpg',
+    'a-cupcake-3.jpg',
+    'a-cupcake-2.jpg',
+    'a-hotel-2.jpg',
+    'a-hotel-1.jpg',
+    'a-sunglass-1.jpg',
+    'bridal_carry_bw.jpg',
+    'standing_bw.jpg',
+    'a-table-1.jpg',
+    'a-veil-1.jpg',
+    'a-sky-1.jpg',
+    'outside_veil.jpg',
+    'marching.jpg',
+    'a-earphone.jpg',
+    'sofa_confetti.jpg',
+  ],
   accounts: {
     '신랑측': [
       { who: '신랑 손장민', bank: '국민', no: '596002-04-050834' },
@@ -303,7 +330,9 @@ $('mapKakao').href = `https://map.kakao.com/?q=${q}`;
 $('howto').innerHTML = CONFIG.venue.howto.map(([t, s]) => `<dt>${t}</dt><dd>${s}</dd>`).join('');
 $('howto').hidden = !CONFIG.venue.howto.length;
 
-$('grid').innerHTML = CONFIG.photos.map(() => '<button class="ph" type="button" aria-label="사진 크게 보기"></button>').join('');
+$('grid').innerHTML = CONFIG.photos.map((_, i) =>
+  `<button class="ph${i >= 9 ? ' extra' : ''}" type="button" aria-label="사진 크게 보기"></button>`
+).join('');
 [...$('grid').children].forEach((el, i) => {
   photo(el, CONFIG.photos[i], `웨딩 사진 ${i + 1}`);
   el.onclick = () => {
@@ -311,6 +340,16 @@ $('grid').innerHTML = CONFIG.photos.map(() => '<button class="ph" type="button" 
     $('lbImg').src = CONFIG.photos[i];$('lb').classList.add('open');
   };
 });
+const galleryMore = $('galleryMore');
+if (CONFIG.photos.length <= 9) galleryMore.hidden = true;
+else galleryMore.textContent = `사진 펼치기 · ${CONFIG.photos.length - 9}장 더보기`;
+galleryMore.onclick = () => {
+  const expanded = $('grid').classList.toggle('expanded');
+  galleryMore.setAttribute('aria-expanded', String(expanded));
+  galleryMore.textContent = expanded
+    ? '사진 접기'
+    : `사진 펼치기 · ${CONFIG.photos.length - 9}장 더보기`;
+};
 $('lb').onclick = () =>$('lb').classList.remove('open');
 document.addEventListener('keydown', e => { if (e.key === 'Escape') $('lb').classList.remove('open'); });
 
